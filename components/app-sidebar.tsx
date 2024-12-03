@@ -37,7 +37,7 @@ const data = {
 			items: [
 				{
 					title: "Tìm kiếm quy định",
-					url: "#search",
+					url: "/regulation-lookup",
 					description: "Nhập nội dung muốn tìm và nhận kết quả phù hợp.",
 					isActive: true,
 				},
