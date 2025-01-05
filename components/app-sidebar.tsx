@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { AccountSwitcher } from "@/components/account-switcher";
 import {
@@ -12,40 +14,62 @@ import {
 	SidebarMenuItem,
 	SidebarRail,
 } from "@/components/ui/sidebar";
-const data = {
+import { usePathname, useRouter } from "next/navigation";
+
+interface NavItem {
+	title: string;
+	url: string;
+	description?: string;
+	isActive?: boolean;
+}
+
+interface NavGroup {
+	title: string;
+	url: string;
+	items: NavItem[];
+}
+
+interface Data {
+	accounts: string[];
+	navMain: NavGroup[];
+}
+
+const initialData: Data = {
 	accounts: ["Nguyễn Thành Tài", "Huỳnh Gia Bảo", "Admin"],
 	navMain: [
 		{
 			title: "Trang chủ",
-			url: "#",
+			url: "",
 			items: [
 				{
 					title: "Giới thiệu hệ thống",
-					url: "#",
-					isActive: false,
+					url: "/home",
 				},
 				{
 					title: "Hướng dẫn sử dụng",
-					url: "#",
-					isActive: false,
+					url: "/tutorial",
 				},
 			],
 		},
 		{
 			title: "Tra cứu",
-			url: "#",
+			url: "",
 			items: [
 				{
 					title: "Tìm kiếm quy định",
 					url: "/regulation-lookup",
 					description: "Nhập nội dung muốn tìm và nhận kết quả phù hợp.",
-					isActive: true,
 				},
+			],
+		},
+		{
+			title: "Biểu mẫu",
+			url: "#",
+			items: [
 				{
-					title: "Lịch sử tra cứu",
-					url: "#history",
-					description: "Xem lại các tra cứu đã thực hiện gần đây.",
-					isActive: false,
+					title: "Danh sách biểu mẫu",
+					url: "/forms",
+					description: "Nhập nội dung muốn tìm và nhận kết quả phù hợp.",
 				},
 			],
 		},
@@ -55,18 +79,15 @@ const data = {
 			items: [
 				{
 					title: "Câu hỏi thường gặp",
-					url: "#",
-					isActive: false,
+					url: "/faq",
 				},
 				{
 					title: "Liên hệ hỗ trợ",
-					url: "#",
-					isActive: false,
+					url: "/contact",
 				},
 				{
 					title: "Tài liệu tham khảo",
-					url: "#",
-					isActive: false,
+					url: "/docs",
 				},
 			],
 		},
@@ -76,13 +97,11 @@ const data = {
 			items: [
 				{
 					title: "Hồ sơ sinh viên",
-					url: "#",
-					isActive: false,
+					url: "/profile",
 				},
 				{
 					title: "Đăng xuất",
-					url: "#",
-					isActive: false,
+					url: "/logout",
 				},
 			],
 		},
@@ -92,6 +111,37 @@ const data = {
 export default function AppSidebar({
 	...props
 }: React.ComponentProps<typeof Sidebar>) {
+	const pathname = usePathname();
+	const router = useRouter();
+	const [data, setData] = React.useState<Data>(initialData);
+
+	const handleSelect = (selectedItem: NavItem) => {
+		setData((prevData) => ({
+			...prevData,
+			navMain: prevData.navMain.map((group) => ({
+				...group,
+				items: group.items.map((item) => ({
+					...item,
+					isActive: item.url === selectedItem.url,
+				})),
+			})),
+		}));
+		router.push(selectedItem.url);
+	};
+
+	React.useEffect(() => {
+		setData((prevData) => ({
+			...prevData,
+			navMain: prevData.navMain.map((group) => ({
+				...group,
+				items: group.items.map((item) => ({
+					...item,
+					isActive: item.url === pathname,
+				})),
+			})),
+		}));
+	}, [pathname]);
+
 	return (
 		<Sidebar {...props}>
 			<SidebarHeader>
@@ -107,9 +157,12 @@ export default function AppSidebar({
 						<SidebarGroupContent>
 							<SidebarMenu>
 								{item.items.map((item) => (
-									<SidebarMenuItem key={item.title}>
-										<SidebarMenuButton asChild isActive={item.isActive}>
-											<a href={item.url}>{item.title}</a>
+									<SidebarMenuItem
+										key={item.title}
+										onClick={() => handleSelect(item)}
+									>
+										<SidebarMenuButton isActive={item.isActive}>
+											{item.title}
 										</SidebarMenuButton>
 									</SidebarMenuItem>
 								))}
