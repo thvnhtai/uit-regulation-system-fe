@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Pointer } from "lucide-react";
+import { Download, Pointer } from "lucide-react";
 import {
 	Dialog,
 	DialogContent,
