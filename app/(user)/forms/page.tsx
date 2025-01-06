@@ -1,5 +1,4 @@
 import DocumentList from "@/components/containers/document-list";
-import DocumentCard from "@/components/document-card";
 import UserLayout from "@/layouts/user-layout";
 import React from "react";
 
