@@ -14,11 +14,29 @@ import {
 } from "./ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { format } from "date-fns";
+import {
+	ChangeAdvisorForm,
+	ChangeMajorForm,
+	ChangeThesisTitleForm,
+	EnglishExemptionForm,
+	PostponeExamForm,
+	RecommendationRequestForm,
+	ReEnrollmentForm,
+	ReExaminationForm,
+	ReferenceLetterForm,
+	ReserveAdmissionForm,
+	RetakeCourseForm,
+	SuspendStudiesForm,
+	ThesisExtensionForm,
+	WithdrawalForm,
+} from "@/components/forms";
 
 interface DocumentCardProps {
 	name: string;
 	description: string;
 	url?: string;
+	docxUrl?: string;
 	formName: string;
 }
 
@@ -26,10 +44,15 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
 	name,
 	description,
 	url,
+	docxUrl,
 	formName,
 }) => {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+	const [formData, setFormData] = useState<{ [key: string]: string }>({});
+	const [date, setDate] = React.useState<Date>();
+	const [fromDate, setFromDate] = useState<Date>();
+	const [toDate, setToDate] = useState<Date>();
+	const [newDeadline, setNewDeadline] = useState<Date>();
 	const handleOpenDialog = () => {
 		setIsDialogOpen(true);
 	};
@@ -40,301 +63,143 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
 		window.open(url, "_self", "noopener,noreferrer");
 	};
 
+	const handleInputChange = (fieldId: string, value: string) => {
+		setFormData((prevData) => ({
+			...prevData,
+			[fieldId]: value,
+		}));
+	};
+
+	const handleSubmit = async () => {
+		if (!docxUrl) return;
+
+		try {
+			const formattedDate = date ? format(date, "dd/MM/yyyy") : "";
+
+			setFormData((prevData) => ({
+				...prevData,
+				dob: formattedDate,
+				fromDate: fromDate ? format(fromDate, "dd/MM/yyyy") : "",
+				toDate: toDate ? format(toDate, "dd/MM/yyyy") : "",
+				newDeadline: newDeadline ? format(newDeadline, "dd/MM/yyyy") : "",
+			}));
+			const response = await fetch("/api/generate-doc", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ docxUrl, formData }),
+			});
+
+			console.log(response);
+
+			if (response.ok) {
+				const blob = await response.blob();
+				const link = document.createElement("a");
+				link.href = window.URL.createObjectURL(blob);
+				link.download = `${formName}.docx`;
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
+				setIsDialogOpen(false);
+			} else {
+				console.error("Failed to generate document");
+			}
+		} catch (error) {
+			console.error("Error generating document:", error);
+		}
+	};
+
 	const renderFormFields = () => {
 		switch (formName) {
 			case "Đơn xin chuyển ngành":
 				return (
-					<>
-						<Label htmlFor="current-major">Current Major</Label>
-						<Input id="current-major" placeholder="Enter your current major" />
-						<Label htmlFor="desired-major">Desired Major</Label>
-						<Input id="desired-major" placeholder="Enter your desired major" />
-					</>
-				);
-			case "Đơn xin chuyển trường":
-				return (
-					<>
-						<Label htmlFor="current-school">Current School</Label>
-						<Input
-							id="current-school"
-							placeholder="Enter your current school"
-						/>
-						<Label htmlFor="desired-school">Desired School</Label>
-						<Input
-							id="desired-school"
-							placeholder="Enter your desired school"
-						/>
-					</>
+					<ChangeMajorForm
+						handleInputChange={handleInputChange}
+						date={date}
+						setDate={setDate}
+					/>
 				);
 			case "Đơn xin tạm ngưng và bảo lưu kết quả học tập":
 				return (
-					<>
-						<Label htmlFor="reason">Reason for Suspension</Label>
-						<Input id="reason" placeholder="Enter your reason for suspension" />
-						<Label htmlFor="duration">Duration of Suspension</Label>
-						<Input
-							id="duration"
-							type="text"
-							placeholder="Enter the duration (e.g., 1 semester)"
-						/>
-					</>
+					<SuspendStudiesForm
+						handleInputChange={handleInputChange}
+						date={date}
+						setDate={setDate}
+						fromDate={fromDate}
+						setFromDate={setFromDate}
+						toDate={toDate}
+						setToDate={setToDate}
+					/>
 				);
 			case "Đơn xin thôi học":
 				return (
-					<>
-						<Label htmlFor="reason-withdrawal">Reason for Withdrawal</Label>
-						<Input
-							id="reason-withdrawal"
-							placeholder="Enter your reason for withdrawal"
-						/>
-					</>
+					<WithdrawalForm
+						handleInputChange={handleInputChange}
+						date={date}
+						setDate={setDate}
+						fromDate={fromDate}
+						setFromDate={setFromDate}
+						toDate={toDate}
+						setToDate={setToDate}
+					/>
 				);
 			case "Đơn xin bảo lưu kết quả trúng tuyển":
 				return (
-					<>
-						<Label htmlFor="reason-reservation">Reason for Reservation</Label>
-						<Input
-							id="reason-reservation"
-							placeholder="Enter your reason for reservation"
-						/>
-						<Label htmlFor="start-date">Desired Start Date</Label>
-						<Input
-							id="start-date"
-							type="date"
-							placeholder="Enter your desired start date"
-						/>
-					</>
+					<ReserveAdmissionForm
+						handleInputChange={handleInputChange}
+						date={date}
+						setDate={setDate}
+						fromDate={fromDate}
+						setFromDate={setFromDate}
+						toDate={toDate}
+						setToDate={setToDate}
+					/>
 				);
-
 			case "Đơn xin hoãn thi":
-				return (
-					<>
-						<Label htmlFor="course-name">Course Name</Label>
-						<Input id="course-name" placeholder="Enter the course name" />
-						<Label htmlFor="original-exam-date">Original Exam Date</Label>
-						<Input
-							id="original-exam-date"
-							type="date"
-							placeholder="Enter the original exam date"
-						/>
-						<Label htmlFor="reason-postponement">Reason for Postponement</Label>
-						<Input
-							id="reason-postponement"
-							placeholder="Enter your reason for postponement"
-						/>
-						<Label htmlFor="requested-exam-date">Requested Exam Date</Label>
-						<Input
-							id="requested-exam-date"
-							type="date"
-							placeholder="Enter the requested exam date"
-						/>
-					</>
-				);
+				return <PostponeExamForm handleInputChange={handleInputChange} />;
 			case "Đơn xin học lại":
-				return (
-					<>
-						<Label htmlFor="course-name">Course Name</Label>
-						<Input id="course-name" placeholder="Enter the course name" />
-						<Label htmlFor="semester">Semester</Label>
-						<Input id="semester" placeholder="Enter the semester" />
-					</>
-				);
+				return <RetakeCourseForm handleInputChange={handleInputChange} />;
 			case "Đơn xin nhập học lại":
 				return (
-					<>
-						<Label htmlFor="reason-readmission">Reason for Readmission</Label>
-						<Input
-							id="reason-readmission"
-							placeholder="Enter your reason for readmission"
-						/>
-						<Label htmlFor="previous-suspension-date">
-							Previous Suspension/Withdrawal Date
-						</Label>
-						<Input
-							id="previous-suspension-date"
-							type="date"
-							placeholder="Enter the date of your previous suspension/withdrawal"
-						/>
-					</>
+					<ReEnrollmentForm
+						handleInputChange={handleInputChange}
+						date={date}
+						setDate={setDate}
+					/>
 				);
-
 			case "Đơn phúc khảo":
 				return (
-					<>
-						<Label htmlFor="course-name">Course Name</Label>
-						<Input id="course-name" placeholder="Enter the course name" />
-						<Label htmlFor="exam-date">Exam Date</Label>
-						<Input
-							id="exam-date"
-							type="date"
-							placeholder="Enter the exam date"
-						/>
-						<Label htmlFor="reason-appeal">Reason for Appeal</Label>
-						<Input
-							id="reason-appeal"
-							placeholder="Enter your reason for appeal"
-						/>
-						<Label htmlFor="original-grade">Original Grade</Label>
-						<Input
-							id="original-grade"
-							placeholder="Enter your original grade"
-						/>
-					</>
-				);
-			case "Đơn điều chỉnh đăng ký học phần":
-				return (
-					<>
-						<Label htmlFor="course-to-add">Course to Add</Label>
-						<Input
-							id="course-to-add"
-							placeholder="Enter the course you want to add"
-						/>
-						<Label htmlFor="course-to-drop">Course to Drop</Label>
-						<Input
-							id="course-to-drop"
-							placeholder="Enter the course you want to drop"
-						/>
-						<Label htmlFor="reason-adjustment">Reason for Adjustment</Label>
-						<Input
-							id="reason-adjustment"
-							placeholder="Enter your reason for adjustment"
-						/>
-					</>
+					<ReExaminationForm
+						handleInputChange={handleInputChange}
+						date={date}
+						setDate={setDate}
+					/>
 				);
 			case "Đơn xin miễn học Anh văn":
-				return (
-					<>
-						<Label htmlFor="english-certificate">English Certificate</Label>
-						<Input
-							id="english-certificate"
-							placeholder="Enter your English certificate (e.g., IELTS, TOEFL)"
-						/>
-						<Label htmlFor="certificate-score">Certificate Score</Label>
-						<Input
-							id="certificate-score"
-							placeholder="Enter your certificate score"
-						/>
-					</>
-				);
-			case "Đơn xin thi lại":
-				return (
-					<>
-						<Label htmlFor="course-name">Course Name</Label>
-						<Input id="course-name" placeholder="Enter the course name" />
-						<Label htmlFor="exam-date">Exam Date</Label>
-						<Input
-							id="exam-date"
-							type="date"
-							placeholder="Enter the exam date"
-						/>
-						<Label htmlFor="reason-retake">Reason for Retake</Label>
-						<Input
-							id="reason-retake"
-							placeholder="Enter your reason for retake"
-						/>
-					</>
-				);
+				return <EnglishExemptionForm handleInputChange={handleInputChange} />;
 			case "Mẫu đơn xin đổi giáo viên hướng dẫn khóa luận tốt nghiệp":
-				return (
-					<>
-						<Label htmlFor="thesis-title">Thesis Title</Label>
-						<Input id="thesis-title" placeholder="Enter your thesis title" />
-						<Label htmlFor="current-advisor">Current Advisor</Label>
-						<Input
-							id="current-advisor"
-							placeholder="Enter your current advisor's name"
-						/>
-						<Label htmlFor="new-advisor">New Advisor</Label>
-						<Input
-							id="new-advisor"
-							placeholder="Enter your new advisor's name"
-						/>
-						<Label htmlFor="reason-change-advisor">Reason for Change</Label>
-						<Input
-							id="reason-change-advisor"
-							placeholder="Enter your reason for change of advisor"
-						/>
-					</>
-				);
+				return <ChangeAdvisorForm handleInputChange={handleInputChange} />;
 			case "Mẫu đơn xin đổi tên đề tài khóa luận tốt nghiệp":
-				return (
-					<>
-						<Label htmlFor="current-thesis-title">Current Thesis Title</Label>
-						<Input
-							id="current-thesis-title"
-							placeholder="Enter your current thesis title"
-						/>
-						<Label htmlFor="new-thesis-title">New Thesis Title</Label>
-						<Input
-							id="new-thesis-title"
-							placeholder="Enter your new thesis title"
-						/>
-						<Label htmlFor="reason-change-title">Reason for Change</Label>
-						<Input
-							id="reason-change-title"
-							placeholder="Enter your reason for change of title"
-						/>
-					</>
-				);
+				return <ChangeThesisTitleForm handleInputChange={handleInputChange} />;
 			case "Mẫu đơn xin gia hạn thời gian thực hiện khóa luận tốt nghiệp":
 				return (
-					<>
-						<Label htmlFor="thesis-title">Thesis Title</Label>
-						<Input id="thesis-title" placeholder="Enter your thesis title" />
-						<Label htmlFor="original-deadline">Original Deadline</Label>
-						<Input
-							id="original-deadline"
-							type="date"
-							placeholder="Enter the original deadline"
-						/>
-						<Label htmlFor="requested-deadline">Requested Deadline</Label>
-						<Input
-							id="requested-deadline"
-							type="date"
-							placeholder="Enter the requested deadline"
-						/>
-						<Label htmlFor="reason-extension">Reason for Extension</Label>
-						<Input
-							id="reason-extension"
-							placeholder="Enter your reason for extension"
-						/>
-					</>
-				);
-			case "Mẫu báo cáo khóa luận tốt nghiệp":
-				return (
-					<>
-						<Label htmlFor="notes">Notes</Label>
-						<Input id="notes" placeholder="Enter any notes" />
-					</>
-				);
-			case "Hình thức trình bày khóa luận tốt nghiệp":
-				return (
-					<>
-						<Label htmlFor="notes">Notes</Label>
-						<Input id="notes" placeholder="Enter any notes" />
-					</>
-				);
-			case "Đề cương chi tiết khóa luận tốt nghiệp":
-				return (
-					<>
-						<Label htmlFor="notes">Notes</Label>
-						<Input id="notes" placeholder="Enter any notes" />
-					</>
+					<ThesisExtensionForm
+						handleInputChange={handleInputChange}
+						newDeadline={newDeadline}
+						setNewDeadline={setNewDeadline}
+					/>
 				);
 			case "Giấy đề nghị":
 				return (
-					<>
-						<Label htmlFor="notes">Notes</Label>
-						<Input id="notes" placeholder="Enter any notes" />
-					</>
+					<RecommendationRequestForm
+						handleInputChange={handleInputChange}
+						date={date}
+						setDate={setDate}
+					/>
 				);
 			case "Giấy giới thiệu":
-				return (
-					<>
-						<Label htmlFor="notes">Notes</Label>
-						<Input id="notes" placeholder="Enter any notes" />
-					</>
-				);
+				return <ReferenceLetterForm handleInputChange={handleInputChange} />;
 			default:
 				return (
 					<>
@@ -356,7 +221,11 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
 					<p className="text-sm text-gray-500">{description}</p>
 				</div>
 			</CardHeader>
-			<CardFooter className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-2">
+			<CardFooter
+				className={`grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:${
+					docxUrl ? "grid-cols-2" : "grid-cols-1"
+				} gap-2`}
+			>
 				<Button
 					variant="outline"
 					size="sm"
@@ -366,25 +235,29 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
 					<Download className="h-4 w-4 mr-1" />
 					Tải về
 				</Button>
-				<Button
-					variant="ghost"
-					size="sm"
-					className="flex items-center"
-					onClick={handleOpenDialog}
-				>
-					<Pointer className="h-4 w-4 mr-1" />
-					Dùng biểu mẫu
-				</Button>
+				{docxUrl && (
+					<Button
+						variant="ghost"
+						size="sm"
+						className="flex items-center"
+						onClick={handleOpenDialog}
+					>
+						<Pointer className="h-4 w-4 mr-1" />
+						Dùng biểu mẫu
+					</Button>
+				)}
 			</CardFooter>
 			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-				<DialogContent className="sm:max-w-[425px]">
+				<DialogContent className="sm:max-w-[1200px]">
 					<DialogHeader>
 						<DialogTitle>{name}</DialogTitle>
 						<DialogDescription>{description}</DialogDescription>
 					</DialogHeader>
 					<form className="grid gap-4 py-4">{renderFormFields()}</form>
 					<DialogFooter>
-						<Button type="submit">Submit</Button>
+						<Button type="button" onClick={handleSubmit}>
+							Submit
+						</Button>
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
