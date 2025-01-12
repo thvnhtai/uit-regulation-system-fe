@@ -62,8 +62,8 @@ const Hero = () => (
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.6, delay: 0.2 }}
 		>
-			Have questions or need assistance? We're here to help. Reach out to our
-			support team.
+			Have questions or need assistance? We&apos;re here to help. Reach out to
+			our support team.
 		</motion.p>
 	</section>
 );

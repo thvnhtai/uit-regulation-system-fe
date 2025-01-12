@@ -1,11 +1,15 @@
+"use client";
+
 import DefaultLayout from "@/layouts/default-layout";
 import FeatureCard from "@/components/shared/feature-card";
 import TestimonialCard from "@/components/shared/testimonial-card";
 import { Button } from "@/components/ui/button";
 import { Bell, BookOpen, Filter, Search } from "lucide-react";
 import Link from "next/link";
+import { useAppSelector } from "@/lib/store";
 
 export default function Home() {
+	const { user } = useAppSelector((state) => state.auth);
 	return (
 		<DefaultLayout>
 			<main className="flex-grow">
@@ -18,7 +22,7 @@ export default function Home() {
 							Explore and understand all the regulations that govern your
 							academic life at UIT.
 						</p>
-						<Link href={"/home"}>
+						<Link href={`${user ? "/home" : "/login"}`}>
 							<Button size="lg" className="text-sm px-8">
 								Start Searching
 							</Button>
@@ -113,7 +117,7 @@ export default function Home() {
 										href="#"
 										className="text-muted-foreground hover:text-foreground"
 									>
-										About ReguLook
+										About Us
 									</Link>
 								</li>
 								<li>
