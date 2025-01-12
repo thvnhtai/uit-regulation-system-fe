@@ -75,13 +75,7 @@ export default function Navbar() {
 											</div>
 										</DropdownMenuLabel>
 										<DropdownMenuSeparator />
-										<DropdownMenuItem asChild>
-											<Link href="/profile">Profile</Link>
-										</DropdownMenuItem>
-										<DropdownMenuItem asChild>
-											<Link href="/settings">Settings</Link>
-										</DropdownMenuItem>
-										<DropdownMenuSeparator />
+
 										<DropdownMenuItem onClick={handleLogout}>
 											Log out
 										</DropdownMenuItem>

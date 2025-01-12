@@ -15,7 +15,8 @@ import {
 	SidebarRail,
 } from "@/components/ui/sidebar";
 import { usePathname, useRouter } from "next/navigation";
-
+import Link from "next/link";
+import Image from "next/image";
 interface NavItem {
 	title: string;
 	url: string;
@@ -30,89 +31,69 @@ interface NavGroup {
 }
 
 interface Data {
-	accounts: string[];
 	navMain: NavGroup[];
 }
-
-const initialData: Data = {
-	accounts: ["Nguyễn Thành Tài", "Huỳnh Gia Bảo", "Admin"],
-	navMain: [
-		{
-			title: "Trang chủ",
-			url: "",
-			items: [
-				{
-					title: "Giới thiệu hệ thống",
-					url: "/home",
-				},
-				{
-					title: "Hướng dẫn sử dụng",
-					url: "/tutorial",
-				},
-			],
-		},
-		{
-			title: "Tra cứu",
-			url: "",
-			items: [
-				{
-					title: "Tìm kiếm quy định",
-					url: "/regulation-lookup",
-					description: "Nhập nội dung muốn tìm và nhận kết quả phù hợp.",
-				},
-			],
-		},
-		{
-			title: "Biểu mẫu",
-			url: "#",
-			items: [
-				{
-					title: "Danh sách biểu mẫu",
-					url: "/forms",
-					description: "Nhập nội dung muốn tìm và nhận kết quả phù hợp.",
-				},
-			],
-		},
-		{
-			title: "Tài liệu và hỗ trợ",
-			url: "#",
-			items: [
-				{
-					title: "Câu hỏi thường gặp",
-					url: "/faq",
-				},
-				{
-					title: "Liên hệ hỗ trợ",
-					url: "/contact",
-				},
-				{
-					title: "Tài liệu tham khảo",
-					url: "/docs",
-				},
-			],
-		},
-		{
-			title: "Thông tin cá nhân",
-			url: "#",
-			items: [
-				{
-					title: "Hồ sơ sinh viên",
-					url: "/profile",
-				},
-				{
-					title: "Đăng xuất",
-					url: "/logout",
-				},
-			],
-		},
-	],
-};
 
 export default function AppSidebar({
 	...props
 }: React.ComponentProps<typeof Sidebar>) {
 	const pathname = usePathname();
 	const router = useRouter();
+
+	const initialData: Data = {
+		navMain: [
+			{
+				title: "Trang chủ",
+				url: "",
+				items: [
+					{
+						title: "Giới thiệu hệ thống",
+						url: "/home",
+					},
+					{
+						title: "Hướng dẫn sử dụng",
+						url: "/tutorial",
+					},
+				],
+			},
+			{
+				title: "Tra cứu",
+				url: "",
+				items: [
+					{
+						title: "Tìm kiếm quy định",
+						url: "/regulation-lookup",
+						description: "Nhập nội dung muốn tìm và nhận kết quả phù hợp.",
+					},
+				],
+			},
+			{
+				title: "Biểu mẫu",
+				url: "#",
+				items: [
+					{
+						title: "Danh sách biểu mẫu",
+						url: "/forms",
+						description: "Nhập nội dung muốn tìm và nhận kết quả phù hợp.",
+					},
+				],
+			},
+			{
+				title: "Tài liệu và hỗ trợ",
+				url: "#",
+				items: [
+					{
+						title: "Câu hỏi thường gặp",
+						url: "/faq",
+					},
+					{
+						title: "Liên hệ hỗ trợ",
+						url: "/contact",
+					},
+				],
+			},
+		],
+	};
 	const [data, setData] = React.useState<Data>(initialData);
 
 	const handleSelect = (selectedItem: NavItem) => {
@@ -144,11 +125,15 @@ export default function AppSidebar({
 
 	return (
 		<Sidebar {...props}>
-			<SidebarHeader>
-				<AccountSwitcher
-					accounts={data.accounts}
-					defaultAccount={data.accounts[0]}
-				/>
+			<SidebarHeader className="flex items-center justify-center">
+				<Link href="/">
+					<Image
+						src="/uit-logo.png"
+						alt="UIT University Logo"
+						width={50}
+						height={50}
+					/>
+				</Link>
 			</SidebarHeader>
 			<SidebarContent>
 				{data.navMain.map((item) => (

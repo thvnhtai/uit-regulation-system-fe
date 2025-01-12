@@ -1,18 +1,37 @@
+import React from "react";
+
 interface HighlightedTextProps {
 	text: string;
 	terms: string[];
 }
 
 export function HighlightedText({ text, terms }: HighlightedTextProps) {
-	let highlightedText = text;
+	if (!terms.length) {
+		return <>{text}</>;
+	}
 
-	terms.forEach((term) => {
-		const regex = new RegExp(`(${term})`, "gi");
-		highlightedText = highlightedText.replace(
-			regex,
-			'<mark class="bg-green-200">$1</mark>'
-		);
-	});
+	const escapeRegExp = (str: string) => {
+		return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+	};
 
-	return <span dangerouslySetInnerHTML={{ __html: highlightedText }} />;
+	const highlightPattern = new RegExp(
+		`(${terms.map(escapeRegExp).join("|")})`,
+		"gi"
+	);
+
+	const parts = text.split(highlightPattern);
+
+	return (
+		<>
+			{parts.map((part, index) =>
+				highlightPattern.test(part) ? (
+					<mark key={index} className="bg-green-200">
+						{part}
+					</mark>
+				) : (
+					<span key={index}>{part}</span>
+				)
+			)}
+		</>
+	);
 }

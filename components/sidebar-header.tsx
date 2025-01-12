@@ -15,8 +15,12 @@ import { usePathname } from "next/navigation";
 
 const breadcrumbData: { [key: string]: { title: string; href: string }[] } = {
 	"/home": [
-		{ title: "Trang chủ", href: "/home" },
-		{ title: "Giới thiệu hệ thống", href: "/tutorial" },
+		{ title: "Trang chủ", href: "#" },
+		{ title: "Giới thiệu hệ thống", href: "/home" },
+	],
+	"/tutorial": [
+		{ title: "Trang chủ", href: "#" },
+		{ title: "Hướng dẫn sử dụng", href: "/tutorial" },
 	],
 	"/regulation-lookup": [
 		{ title: "Tra cứu", href: "#" },
@@ -25,6 +29,14 @@ const breadcrumbData: { [key: string]: { title: string; href: string }[] } = {
 	"/forms": [
 		{ title: "Biểu mẫu", href: "#" },
 		{ title: "Danh sách biểu mẫu", href: "/forms" },
+	],
+	"/faq": [
+		{ title: "Tài liệu và hỗ trợ", href: "#" },
+		{ title: "Câu hỏi thường gặp", href: "/faq" },
+	],
+	"/contact": [
+		{ title: "Tài liệu và hỗ trợ", href: "#" },
+		{ title: "Liên hệ hỗ trợ", href: "/faq" },
 	],
 };
 
