@@ -84,16 +84,18 @@ export async function POST(req: NextRequest) {
 					"Content-Length": buf.length.toString(),
 				},
 			});
-		} catch (docTemplaterError: any) {
+		} catch (docTemplaterError: unknown) {
 			console.error("Docxtemplater error:", docTemplaterError);
 			// If Docxtemplater fails, it might be due to file corruption.
 			// You might want to log more details about the error.
 			throw docTemplaterError;
 		}
-	} catch (error: any) {
+	} catch (error: unknown) {
 		console.error("Error generating document:", error);
+		const errorMessage =
+			error instanceof Error ? error.message : "Unknown error";
 		return NextResponse.json(
-			{ message: "Error generating document", error: error.message },
+			{ message: "Error generating document", error: errorMessage },
 			{ status: 500 }
 		);
 	}
