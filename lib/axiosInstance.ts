@@ -31,7 +31,7 @@ let refreshTokenPromise: Promise<
 
 axiosInstance.interceptors.response.use(
 	(response) => {
-		return response.data;
+		return response;
 	},
 	async (error: AxiosError) => {
 		const originalRequest = error.config as AxiosRequestConfig & {
