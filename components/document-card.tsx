@@ -88,7 +88,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ docxUrl, formData }),
+				body: JSON.stringify({ url: docxUrl, formData }),
 			});
 
 			console.log(response);
