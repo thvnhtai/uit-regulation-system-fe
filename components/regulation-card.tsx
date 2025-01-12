@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { HighlightedText } from "@/components/highlighted-text";
-import { Download, Eye, FileText, Repeat2 } from "lucide-react";
+import { Eye, Repeat2 } from "lucide-react";
 
 export interface Regulation {
 	id: string;
