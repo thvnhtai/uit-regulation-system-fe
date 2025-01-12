@@ -86,18 +86,14 @@ const ContactSection: React.FC<ContactSectionProps> = ({
 	handleChange,
 	handleSubmit,
 }) => (
-	<section className="container mx-auto px-6">
-		<div className="max-w-4xl mx-auto flex flex-wrap">
-			<div className="w-full md:w-1/2 mb-8 md:mb-0">
-				<ContactInfo />
-			</div>
-			<div className="w-full md:w-1/2">
-				<ContactForm
-					formData={formData}
-					handleChange={handleChange}
-					handleSubmit={handleSubmit}
-				/>
-			</div>
+	<section className="container mx-auto p-6">
+		<div className="max-w-4xl mx-auto flex flex-wrap gap-4">
+			<ContactInfo />
+			<ContactForm
+				formData={formData}
+				handleChange={handleChange}
+				handleSubmit={handleSubmit}
+			/>
 		</div>
 	</section>
 );
@@ -138,7 +134,8 @@ const ContactInfo = () => (
 			<div>
 				<h3 className="font-semibold">Address</h3>
 				<p className="text-gray-600">
-					123 University Ave, Campus Building, Room 456
+					University of Information Technology, Han Thuyen Street, Quarter 6, P,
+					Thu Duc, Ho Chi Minh City
 				</p>
 			</div>
 		</motion.div>
@@ -165,7 +162,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
 }) => (
 	<motion.form
 		onSubmit={handleSubmit}
-		className="space-y-4"
+		className="space-y-4 w-full"
 		initial={{ opacity: 0, y: 20 }}
 		animate={{ opacity: 1, y: 0 }}
 		transition={{ duration: 0.5 }}

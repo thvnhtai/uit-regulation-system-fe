@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, Pointer } from "lucide-react";
+import { Download, LoaderCircle, Pointer } from "lucide-react";
 import {
 	Dialog,
 	DialogContent,
@@ -53,6 +53,8 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
 	const [fromDate, setFromDate] = useState<Date>();
 	const [toDate, setToDate] = useState<Date>();
 	const [newDeadline, setNewDeadline] = useState<Date>();
+	const [isLoading, setIsLoading] = useState(false);
+
 	const handleOpenDialog = () => {
 		setIsDialogOpen(true);
 	};
@@ -72,7 +74,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
 
 	const handleSubmit = async () => {
 		if (!docxUrl) return;
-
+		setIsLoading(true);
 		try {
 			const formattedDate = date ? format(date, "dd/MM/yyyy") : "";
 
@@ -108,6 +110,8 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
 			}
 		} catch (error) {
 			console.error("Error generating document:", error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -254,7 +258,10 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
 					</DialogHeader>
 					<form className="grid gap-4 py-4">{renderFormFields()}</form>
 					<DialogFooter>
-						<Button type="button" onClick={handleSubmit}>
+						<Button type="button" onClick={handleSubmit} disabled={isLoading}>
+							{isLoading && (
+								<LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+							)}
 							Submit
 						</Button>
 					</DialogFooter>
