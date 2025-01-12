@@ -69,7 +69,13 @@ const TutorialSteps = () => {
 	);
 };
 
-const TutorialStep = ({ step, index }: { step: any; index: number }) => (
+interface Step {
+	title: string;
+	description: string;
+	icon: JSX.Element;
+}
+
+const TutorialStep = ({ step, index }: { step: Step; index: number }) => (
 	<motion.div
 		className="mb-12 flex items-start"
 		initial={{ opacity: 0, x: -20 }}
