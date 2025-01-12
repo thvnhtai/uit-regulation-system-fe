@@ -140,8 +140,6 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
 						setDate={setDate}
 						fromDate={fromDate}
 						setFromDate={setFromDate}
-						toDate={toDate}
-						setToDate={setToDate}
 					/>
 				);
 			case "Đơn xin bảo lưu kết quả trúng tuyển":

@@ -72,18 +72,31 @@ const PostponeExamForm: React.FC<FormProps> = ({
 				</div>
 			</div>
 
-			<div className="col-span-2">
-				<Label htmlFor="reason">
-					Lý do xin hoãn thi và các học phần xin hoãn
-				</Label>
-				<Textarea
-					id="reason"
-					name="reason"
-					placeholder="Nhập lý do xin hoãn thi và các học phần xin hoãn"
-					rows={5}
-					required
-					onChange={(e) => handleInputChange("reason", e.target.value)}
-				/>
+			<div className="grid grid-cols-2 col-span-2 gap-4">
+				<div className="col-span-2 sm:col-span-1">
+					<Label htmlFor="reason">Lý do xin hoãn thi</Label>
+					<Textarea
+						id="reason"
+						name="reason"
+						placeholder="Nhập lý do xin hoãn thi"
+						rows={5}
+						required
+						onChange={(e) => handleInputChange("reason", e.target.value)}
+					/>
+				</div>
+				<div className="col-span-2 sm:col-span-1">
+					<Label htmlFor="postponedCourses">Các học phần xin hoãn</Label>
+					<Textarea
+						id="postponedCourses"
+						name="postponedCourses"
+						placeholder="Nhập các học phần xin hoãn"
+						rows={5}
+						required
+						onChange={(e) =>
+							handleInputChange("postponedCourses", e.target.value)
+						}
+					/>
+				</div>
 			</div>
 		</div>
 	);

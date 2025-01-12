@@ -37,18 +37,6 @@ const ReferenceLetterForm: React.FC<FormProps> = ({
 			</div>
 
 			<div className="col-span-2">
-				<Label htmlFor="university">Trường Đại học CNTT</Label>
-				<Input
-					type="text"
-					id="university"
-					name="university"
-					value="Trường Đại học CNTT"
-					readOnly
-					className="bg-gray-100"
-				/>
-			</div>
-
-			<div className="col-span-2">
 				<Label htmlFor="contactPurpose">Đến liên hệ về việc</Label>
 				<Textarea
 					id="contactPurpose"

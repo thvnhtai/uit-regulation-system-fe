@@ -147,10 +147,7 @@ const ThesisExtensionForm: React.FC<FormProps> = ({
 			</div>
 
 			<div className="col-span-2">
-				<Label htmlFor="thesisTitle">
-					Chúng tôi đang thực hiện khóa luận tốt nghiệp với tên đề tài đã đăng
-					ký là
-				</Label>
+				<Label htmlFor="thesisTitle">Tên đề tài</Label>
 				<Textarea
 					id="thesisTitle"
 					name="thesisTitle"

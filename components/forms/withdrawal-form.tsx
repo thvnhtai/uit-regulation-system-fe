@@ -11,8 +11,6 @@ const WithdrawalForm: React.FC<FormProps> = ({
 	setDate = () => {},
 	fromDate,
 	setFromDate = () => {},
-	toDate,
-	setToDate = () => {},
 }) => (
 	<div className="grid gap-6 grid-cols-1 sm:grid-cols-2 divide-x divide-gray-200">
 		<div className="col-span-1">
@@ -57,21 +55,12 @@ const WithdrawalForm: React.FC<FormProps> = ({
 		<div className="col-span-1">
 			<div className="grid gap-2 sm:pl-4">
 				<div className="col-span-1">
-					<Label htmlFor="fromDate">Tạm dừng và bảo lưu từ ngày</Label>
+					<Label htmlFor="fromDate">Thôi học kể từ ngày</Label>
 					<DatePicker
 						date={fromDate}
 						setDate={setFromDate}
 						handleInputChange={handleInputChange}
 						fieldId="fromDate"
-					/>
-				</div>
-				<div className="col-span-1">
-					<Label htmlFor="toDate">Tạm dừng và bảo lưu đến ngày</Label>
-					<DatePicker
-						date={toDate}
-						setDate={setToDate}
-						handleInputChange={handleInputChange}
-						fieldId="toDate"
 					/>
 				</div>
 				<div className="col-span-1">
