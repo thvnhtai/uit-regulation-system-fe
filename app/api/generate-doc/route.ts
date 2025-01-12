@@ -4,7 +4,7 @@ import Docxtemplater from "docxtemplater";
 import fs from "fs";
 import path from "path";
 import { format } from "date-fns";
-
+import os from "os";
 export async function POST(req: NextRequest) {
 	const { url, formData } = await req.json();
 
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 		console.log("Downloaded file size (bytes):", fileBuffer.length);
 
 		// 2. Create a temporary directory if it doesn't exist
-		const tempDir = path.join(process.cwd(), "temp");
+		const tempDir = path.join(os.tmpdir(), "temp");
 		if (!fs.existsSync(tempDir)) {
 			fs.mkdirSync(tempDir, { recursive: true });
 		}
