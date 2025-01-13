@@ -61,10 +61,6 @@ const ReferenceLetterForm: React.FC<FormProps> = ({
 					onChange={(e) => handleInputChange("companyName", e.target.value)}
 				/>
 			</div>
-
-			<div className="col-span-2">
-				<Label>hoàn thành nhiệm vụ.</Label>
-			</div>
 		</div>
 	);
 };
